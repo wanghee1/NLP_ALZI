@@ -1,0 +1,1296 @@
+/* ─────────────────────────────────────────────
+   ALZI Design System
+   ───────────────────────────────────────────── */
+
+/* ── Variables ── */
+:root {
+  --clr-primary:       #2563EB;
+  --clr-primary-dark:  #1D4ED8;
+  --clr-primary-light: #EFF6FF;
+  --clr-primary-ring:  #BFDBFE;
+
+  --clr-bg:            #FFFFFF;
+  --clr-surface:       #F7F9FC;
+  --clr-border:        #E4EAF3;
+
+  --clr-user-bubble:   #2563EB;
+  --clr-bot-bubble:    #F0F4F9;
+
+  --clr-txt-primary:   #0F172A;
+  --clr-txt-secondary: #475569;
+  --clr-txt-muted:     #94A3B8;
+  --clr-txt-on-blue:   #FFFFFF;
+
+  --sev-high-bg: #FEE2E2; --sev-high-tx: #DC2626;
+  --sev-mid-bg:  #FEF3C7; --sev-mid-tx:  #D97706;
+  --sev-low-bg:  #F1F5F9; --sev-low-tx:  #64748B;
+
+  --font: 'Pretendard Variable', 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --lh-body: 1.65;
+  --lh-head: 1.3;
+
+  --r-bubble:  20px;
+  --r-card:    14px;
+  --r-feature: 16px;
+  --r-btn:     10px;
+  --r-badge:    6px;
+  --r-input:   14px;
+
+  --sh-card:  0 1px 4px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.04);
+  --sh-hover: 0 6px 20px rgba(37,99,235,.14), 0 1px 4px rgba(0,0,0,.05);
+
+  --dur-fast:   160ms;
+  --dur-normal: 240ms;
+  --ease: cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; }
+body {
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: var(--lh-body);
+  color: var(--clr-txt-primary);
+  background: var(--clr-bg);
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+a { color: inherit; text-decoration: none; }
+input, textarea { font-family: inherit; }
+
+/* ── Animations ── */
+@keyframes alzi-dot {
+  0%, 80%, 100% { transform: translateY(0); opacity: .35; }
+  40%           { transform: translateY(-5px); opacity: 1; }
+}
+@keyframes alzi-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes alzi-pop {
+  from { opacity: 0; transform: scale(.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ── App Layout ── */
+.alzi-app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: 100vh; /* fallback */
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ── Header ── */
+.alzi-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  background: var(--clr-surface);
+  border-bottom: 1px solid var(--clr-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.alzi-header-brand { display: flex; flex-direction: column; gap: 1px; }
+
+/* 로고 버튼 — 클릭 시 홈으로 */
+.alzi-logo-btn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.alzi-logo-btn:hover { opacity: .75; }
+.alzi-logo-btn:focus-visible { outline: 2px solid var(--clr-primary-ring); outline-offset: 3px; }
+
+.alzi-logo {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: var(--clr-primary);
+  line-height: 1;
+}
+.alzi-tagline {
+  font-size: 12px;
+  color: var(--clr-txt-muted);
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+
+/* ── Chat & Message List ── */
+.alzi-chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px 8px;
+  scroll-behavior: smooth;
+}
+.alzi-chat::-webkit-scrollbar { width: 4px; }
+.alzi-chat::-webkit-scrollbar-track { background: transparent; }
+.alzi-chat::-webkit-scrollbar-thumb { background: var(--clr-border); border-radius: 2px; }
+
+/* ── Message Row ── */
+.alzi-row {
+  display: flex;
+  margin-bottom: 12px;
+  animation: alzi-in var(--dur-fast) var(--ease) both;
+}
+.alzi-row--user { justify-content: flex-end; }
+.alzi-row--bot  { justify-content: flex-start; }
+
+/* ── User Bubble ── */
+.alzi-bubble-user {
+  max-width: 72%;
+  padding: 10px 14px;
+  background: var(--clr-user-bubble);
+  color: var(--clr-txt-on-blue);
+  border-radius: var(--r-bubble) var(--r-bubble) 4px var(--r-bubble);
+  font-size: 15px;
+  line-height: var(--lh-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Bot Bubble ── */
+.alzi-bubble-bot {
+  max-width: 85%;
+  padding: 14px 16px;
+  background: var(--clr-bot-bubble);
+  color: var(--clr-txt-primary);
+  border-radius: var(--r-bubble) var(--r-bubble) var(--r-bubble) 4px;
+  font-size: 15px;
+  line-height: var(--lh-body);
+}
+.alzi-bubble-bot--wide { max-width: 95%; }
+
+/* ── Consultation text ── */
+.alzi-consultation-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 문단 분리 렌더 — \n\n 기준으로 Paragraphs 컴포넌트가 생성 */
+.alzi-consultation-para {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.75;
+  margin-bottom: 0.75em;
+}
+.alzi-consultation-para:last-child { margin-bottom: 0; }
+
+/* ── Source Chips ── */
+.alzi-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.alzi-source-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  background: var(--clr-primary-light);
+  color: var(--clr-primary);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ── Legal Grounds Toggle ── */
+.alzi-grounds-wrap { margin-top: 12px; }
+.alzi-grounds-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  width: 100%;
+  background: rgba(37,99,235,.07);
+  color: var(--clr-primary);
+  border-radius: var(--r-btn);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background var(--dur-fast) var(--ease);
+}
+.alzi-grounds-toggle-btn:hover { background: rgba(37,99,235,.13); }
+.alzi-grounds-toggle-btn:focus-visible { outline: 2px solid var(--clr-primary-ring); outline-offset: 2px; }
+.alzi-grounds-chevron {
+  margin-left: auto;
+  transition: transform var(--dur-normal) var(--ease);
+}
+.alzi-grounds-chevron--open { transform: rotate(180deg); }
+
+.alzi-grounds-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  /* visibility로 탭 포커스도 차단 */
+  visibility: hidden;
+  transition:
+    max-height 300ms var(--ease),
+    opacity 200ms var(--ease),
+    visibility 0ms 200ms;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.alzi-grounds-body--open {
+  max-height: 3000px;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    max-height 400ms var(--ease),
+    opacity 250ms var(--ease),
+    visibility 0ms 0ms;
+}
+
+.alzi-ground-item {
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--clr-border);
+}
+.alzi-ground-item:last-child { border-bottom: none; }
+.alzi-ground-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--clr-txt-primary);
+  margin-bottom: 6px;
+}
+.alzi-ground-plain {
+  font-size: 13px;
+  color: var(--clr-txt-secondary);
+  margin-bottom: 6px;
+  line-height: var(--lh-body);
+}
+.alzi-ground-original {
+  font-size: 12px;
+  color: var(--clr-txt-muted);
+  font-style: italic;
+  line-height: 1.6;
+  padding: 6px 8px;
+  background: rgba(0,0,0,.03);
+  border-radius: 6px;
+  white-space: pre-wrap;
+}
+
+/* ── Empty State ── */
+.alzi-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 8px;
+  animation: alzi-pop var(--dur-normal) var(--ease) both;
+}
+.alzi-empty-section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clr-txt-muted);
+  padding: 4px 0;
+}
+
+/* ── Feature Cards ── */
+.alzi-feature-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.alzi-feature-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-feature);
+  box-shadow: var(--sh-card);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  text-align: left;
+  width: 100%;
+}
+.alzi-feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-hover);
+  border-color: var(--clr-primary-ring);
+}
+.alzi-feature-card:focus-visible {
+  outline: 2px solid var(--clr-primary-ring);
+  outline-offset: 2px;
+}
+.alzi-feature-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--clr-primary-light);
+  border-radius: 10px;
+}
+.alzi-feature-text { display: flex; flex-direction: column; gap: 2px; }
+.alzi-feature-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--clr-txt-primary);
+  line-height: 1.3;
+}
+.alzi-feature-desc {
+  font-size: 13px;
+  color: var(--clr-txt-secondary);
+}
+
+/* ── Quick Chips ── */
+.alzi-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 2px 0;
+}
+.alzi-chip {
+  padding: 6px 13px;
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--clr-txt-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  white-space: nowrap;
+}
+.alzi-chip:hover {
+  background: var(--clr-primary-light);
+  border-color: var(--clr-primary-ring);
+  color: var(--clr-primary);
+}
+.alzi-chip:focus-visible { outline: 2px solid var(--clr-primary-ring); outline-offset: 2px; }
+
+/* ── Contract Result ── */
+.alzi-contract-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.alzi-contract-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: var(--clr-primary-light);
+  color: var(--clr-primary);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.alzi-violations-list { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Violation Card ── */
+.alzi-v-card {
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  animation: alzi-in var(--dur-fast) var(--ease) both;
+}
+.alzi-v-card-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--clr-border);
+}
+.alzi-severity-badge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 2px 9px;
+  border-radius: var(--r-badge);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.alzi-severity-badge--high { background: var(--sev-high-bg); color: var(--sev-high-tx); }
+.alzi-severity-badge--mid  { background: var(--sev-mid-bg);  color: var(--sev-mid-tx);  }
+.alzi-severity-badge--low  { background: var(--sev-low-bg);  color: var(--sev-low-tx);  }
+
+.alzi-type-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--clr-txt-secondary);
+}
+.alzi-v-card-body { padding: 10px 12px; }
+.alzi-v-clause {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--clr-txt-muted);
+  margin-bottom: 7px;
+  line-height: 1.5;
+}
+.alzi-v-issue {
+  font-size: 14px;
+  color: var(--clr-txt-primary);
+  line-height: var(--lh-body);
+  margin-bottom: 10px;
+}
+.alzi-suggestion-box {
+  padding: 9px 12px;
+  background: var(--clr-primary-light);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--clr-txt-secondary);
+  line-height: var(--lh-body);
+}
+.alzi-suggestion-label {
+  font-weight: 700;
+  color: var(--clr-primary);
+  margin-bottom: 3px;
+  font-size: 12px;
+}
+
+/* ── Follow Up Prompt ── */
+.alzi-followup {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--clr-border);
+}
+.alzi-followup-text {
+  font-size: 13px;
+  color: var(--clr-txt-secondary);
+  margin-bottom: 8px;
+}
+.alzi-followup-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--clr-primary);
+  color: #fff;
+  border-radius: var(--r-btn);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.alzi-followup-btn:hover { background: var(--clr-primary-dark); transform: translateY(-1px); }
+.alzi-followup-btn:focus-visible { outline: 2px solid var(--clr-primary-ring); outline-offset: 2px; }
+
+/* ── Collecting / Confirming Bubble ── */
+.alzi-progress-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  background: var(--clr-primary-light);
+  color: var(--clr-primary);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.alzi-confirm-fields {
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  margin: 8px 0 12px;
+}
+.alzi-confirm-field {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--clr-border);
+  font-size: 13px;
+}
+.alzi-confirm-field:last-child { border-bottom: none; }
+.alzi-confirm-key {
+  flex-shrink: 0;
+  color: var(--clr-txt-muted);
+  font-weight: 500;
+  min-width: 70px;
+}
+.alzi-confirm-val { color: var(--clr-txt-primary); font-weight: 600; }
+
+/* ── Choice Buttons ── */
+.alzi-choices {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.alzi-choice-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.alzi-choice-row--inline { margin-top: 10px; }
+
+.alzi-choice-btn {
+  padding: 8px 16px;
+  border-radius: var(--r-btn);
+  font-size: 14px;
+  font-weight: 600;
+  border: 1.5px solid;
+  transition: all var(--dur-fast) var(--ease);
+}
+.alzi-choice-btn--primary {
+  background: var(--clr-primary);
+  color: #fff;
+  border-color: var(--clr-primary);
+}
+.alzi-choice-btn--primary:hover { background: var(--clr-primary-dark); border-color: var(--clr-primary-dark); }
+.alzi-choice-btn--secondary {
+  background: transparent;
+  color: var(--clr-txt-secondary);
+  border-color: var(--clr-border);
+}
+.alzi-choice-btn--secondary:hover { border-color: var(--clr-primary-ring); color: var(--clr-primary); }
+
+/* 수집 흐름 선택지 버튼 — 보기 전용 outline 스타일 */
+.alzi-choice-btn--option {
+  background: var(--clr-bg);
+  color: var(--clr-primary);
+  border-color: var(--clr-primary-ring);
+  padding: 7px 18px;
+  font-size: 14px;
+}
+.alzi-choice-btn--option:hover {
+  background: var(--clr-primary-light);
+  border-color: var(--clr-primary);
+}
+
+.alzi-choice-btn:focus-visible { outline: 2px solid var(--clr-primary-ring); outline-offset: 2px; }
+.alzi-choice-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ── Download Bubble ── */
+.alzi-download-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.alzi-download-complete {
+  font-size: 15px;
+  font-weight: 700;
+  color: #16A34A;
+}
+.alzi-download-hint {
+  font-size: 13px;
+  color: var(--clr-txt-secondary);
+}
+.alzi-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  background: #16A34A;
+  color: #fff;
+  border-radius: var(--r-btn);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+  width: fit-content;
+}
+.alzi-download-btn:hover { background: #15803D; transform: translateY(-1px); }
+.alzi-download-btn:focus-visible { outline: 2px solid #86EFAC; outline-offset: 2px; }
+
+/* ── No Violations ── */
+.alzi-no-violations {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #F0FDF4;
+  border-radius: var(--r-card);
+  font-size: 14px;
+  font-weight: 600;
+  color: #16A34A;
+}
+
+/* ── Typing Indicator ── */
+.alzi-typing-bubble {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--clr-bot-bubble);
+  border-radius: var(--r-bubble) var(--r-bubble) var(--r-bubble) 4px;
+  animation: alzi-in var(--dur-fast) var(--ease) both;
+}
+.alzi-typing-dots-inline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.alzi-typing-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--clr-txt-muted);
+  animation: alzi-dot 1.2s var(--ease) infinite;
+}
+.alzi-typing-dot:nth-child(2) { animation-delay: .18s; }
+.alzi-typing-dot:nth-child(3) { animation-delay: .36s; }
+
+.alzi-typing-stage {
+  font-size: 13px;
+  color: var(--clr-txt-secondary);
+  white-space: nowrap;
+  animation: alzi-stage-in 280ms var(--ease) both;
+}
+
+@keyframes alzi-stage-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alzi-typing-stage { animation: none; }
+  .alzi-typing-dot   { animation: none; opacity: .6; }
+}
+
+/* legacy selectors kept for any remaining references */
+.alzi-typing { display: flex; align-items: center; gap: 5px; padding: 12px 16px 4px; }
+.alzi-typing-dots {
+  display: flex; align-items: center; gap: 4px;
+  padding: 10px 14px;
+  background: var(--clr-bot-bubble);
+  border-radius: var(--r-bubble) var(--r-bubble) var(--r-bubble) 4px;
+}
+
+/* ── Input Area ── */
+.alzi-input-area {
+  flex-shrink: 0;
+  padding: 10px 16px 12px;
+  background: var(--clr-surface);
+  border-top: 1px solid var(--clr-border);
+}
+.alzi-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: var(--clr-bg);
+  border: 1.5px solid var(--clr-border);
+  border-radius: 18px;
+  padding: 6px 8px 6px 12px;
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.alzi-input-row:focus-within {
+  border-color: var(--clr-primary);
+  box-shadow: 0 0 0 3px var(--clr-primary-ring);
+}
+.alzi-attach-btn {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--clr-txt-muted);
+  font-size: 18px;
+  transition: all var(--dur-fast) var(--ease);
+}
+.alzi-attach-btn:hover { color: var(--clr-primary); background: var(--clr-primary-light); }
+.alzi-attach-btn:focus-visible { outline: 2px solid var(--clr-primary-ring); outline-offset: 2px; }
+.alzi-attach-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.alzi-textarea {
+  flex: 1;
+  resize: none;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--clr-txt-primary);
+  max-height: 120px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.alzi-textarea::placeholder { color: var(--clr-txt-muted); }
+.alzi-textarea:disabled { opacity: .5; }
+
+.alzi-send-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--clr-primary);
+  color: #fff;
+  font-size: 16px;
+  transition: all var(--dur-fast) var(--ease);
+}
+.alzi-send-btn:hover:not(:disabled) { background: var(--clr-primary-dark); transform: scale(1.05); }
+.alzi-send-btn:focus-visible { outline: 2px solid var(--clr-primary-ring); outline-offset: 2px; }
+.alzi-send-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Main / Footer layout ── */
+.alzi-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px 8px;
+  scroll-behavior: smooth;
+}
+.alzi-main::-webkit-scrollbar { width: 4px; }
+.alzi-main::-webkit-scrollbar-track { background: transparent; }
+.alzi-main::-webkit-scrollbar-thumb { background: var(--clr-border); border-radius: 2px; }
+
+.alzi-footer {
+  flex-shrink: 0;
+  background: var(--clr-surface);
+  border-top: 1px solid var(--clr-border);
+}
+.alzi-disclaimer {
+  text-align: left;
+  font-size: 11px;
+  color: var(--clr-txt-muted);
+  line-height: 1.6;
+  padding: 4px 16px 10px;
+}
+
+/* ── Message List ── */
+.alzi-message-list { display: flex; flex-direction: column; }
+
+/* ── Bubble base aliases ── */
+.alzi-bubble {
+  font-size: 15px;
+  line-height: var(--lh-body);
+  word-break: break-word;
+  white-space: pre-wrap;
+  animation: alzi-in var(--dur-fast) var(--ease) both;
+}
+.alzi-bubble--user {
+  max-width: 72%;
+  padding: 10px 14px;
+  background: var(--clr-user-bubble);
+  color: var(--clr-txt-on-blue);
+  border-radius: var(--r-bubble) var(--r-bubble) 4px var(--r-bubble);
+}
+.alzi-bubble--bot {
+  max-width: 85%;
+  padding: 14px 16px;
+  background: var(--clr-bot-bubble);
+  color: var(--clr-txt-primary);
+  border-radius: var(--r-bubble) var(--r-bubble) var(--r-bubble) 4px;
+}
+.alzi-bubble--consultation,
+.alzi-bubble--contract,
+.alzi-bubble--collecting,
+.alzi-bubble--confirming,
+.alzi-bubble--download,
+.alzi-bubble--doc-selector,
+.alzi-bubble--guidance,
+.alzi-bubble--qna-guide { max-width: 92%; }
+
+/* ── Avatar ── */
+.alzi-avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--clr-primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  align-self: flex-end;
+}
+
+/* ── Simple / collecting text ── */
+.alzi-simple-text,
+.alzi-collecting-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Sources (text) ── */
+.alzi-sources {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--clr-txt-muted);
+}
+
+/* ── Legal Grounds ── */
+.alzi-grounds { margin-top: 12px; }
+.alzi-grounds-caret { margin-left: auto; }
+.alzi-ground-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.alzi-ground-law {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--clr-primary);
+}
+.alzi-ground-article {
+  font-size: 12px;
+  color: var(--clr-txt-muted);
+}
+.alzi-ground-original-wrap { margin-top: 6px; }
+.alzi-ground-original-toggle {
+  font-size: 12px;
+  color: var(--clr-txt-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.alzi-ground-original-toggle:hover { color: var(--clr-primary); }
+
+/* ── Empty State Hero ── */
+.alzi-empty-hero {
+  padding: 8px 0 16px;
+  text-align: center;
+}
+.alzi-empty-tagline {
+  font-size: clamp(22px, 6vw, 28px);
+  font-weight: 800;
+  color: var(--clr-txt-primary);
+  line-height: 1.2;
+}
+.alzi-empty-tagline.highlight { color: var(--clr-primary); }
+.alzi-empty-sub {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--clr-txt-secondary);
+}
+
+/* ── Feature Grid alias ── */
+.alzi-feature-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── FAQ Section ── */
+.alzi-faq-section { display: flex; flex-direction: column; gap: 6px; }
+.alzi-faq-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clr-txt-muted);
+  padding: 2px 0;
+}
+
+/* ── Doc Selector Bubble ── */
+.alzi-doc-selector-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--clr-txt-primary);
+}
+.alzi-doc-selector-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.alzi-doc-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 13px;
+  background: var(--clr-bg);
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--r-card);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.alzi-doc-option-btn:hover {
+  border-color: var(--clr-primary-ring);
+  box-shadow: 0 0 0 3px var(--clr-primary-ring);
+}
+.alzi-doc-option-btn:focus-visible {
+  outline: 2px solid var(--clr-primary-ring);
+  outline-offset: 2px;
+}
+.alzi-doc-option-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--clr-primary-light);
+  border-radius: 8px;
+}
+.alzi-doc-option-text { display: flex; flex-direction: column; gap: 1px; }
+.alzi-doc-option-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--clr-txt-primary);
+}
+.alzi-doc-option-desc {
+  font-size: 12px;
+  color: var(--clr-txt-secondary);
+}
+
+/* ── Guidance Bubble ── */
+.alzi-guidance-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--clr-txt-primary);
+  margin-bottom: 8px;
+}
+.alzi-guidance-body {
+  font-size: 14px;
+  color: var(--clr-txt-secondary);
+  line-height: var(--lh-body);
+  margin-bottom: 6px;
+  white-space: pre-wrap;
+}
+.alzi-guidance-body:last-of-type { margin-bottom: 10px; }
+.alzi-guidance-prompt {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--clr-txt-primary);
+  margin-bottom: 2px;
+}
+
+/* ── Contract Notice ── */
+.alzi-contract-notice {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--clr-border);
+  font-size: 11px;
+  color: var(--clr-txt-muted);
+  line-height: 1.6;
+}
+
+/* ── Suggest Doc Banner ── */
+.alzi-suggest-banner {
+  margin-top: 14px;
+  padding: 11px 13px;
+  background: var(--clr-primary-light);
+  border-radius: 10px;
+}
+.alzi-suggest-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clr-primary);
+  margin-bottom: 8px;
+}
+.alzi-suggest-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.alzi-suggest-btn {
+  padding: 7px 14px;
+  background: var(--clr-bg);
+  border: 1.5px solid var(--clr-primary-ring);
+  border-radius: var(--r-btn);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clr-primary);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+}
+.alzi-suggest-btn:hover {
+  background: var(--clr-primary);
+  color: #fff;
+  border-color: var(--clr-primary);
+}
+.alzi-suggest-btn:focus-visible { outline: 2px solid var(--clr-primary-ring); outline-offset: 2px; }
+
+/* ── Violation Card severity variants ── */
+.alzi-v-card--높음 { border-left: 3px solid var(--sev-high-tx); }
+.alzi-v-card--중간 { border-left: 3px solid var(--sev-mid-tx); }
+.alzi-v-card--낮음 { border-left: 3px solid #94A3B8; }
+
+/* ── V-card header ── */
+.alzi-v-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 7px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--clr-border);
+}
+.alzi-v-clause {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clr-txt-secondary);
+  /* clause wraps to next line if badges + text overflow */
+  flex-basis: 100%;
+  min-width: 0;
+}
+
+/* ── Type badge ── */
+.alzi-type-badge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 2px 9px;
+  border-radius: var(--r-badge);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.alzi-type-badge--위법 { background: #FEE2E2; color: #DC2626; }
+.alzi-type-badge--불리 { background: #FEF3C7; color: #D97706; }
+.alzi-type-badge--누락 { background: #F1F5F9; color: #64748B; }
+
+/* ── Severity badge aliases (Korean) ── */
+.alzi-severity-badge--높음 { background: var(--sev-high-bg); color: var(--sev-high-tx); }
+.alzi-severity-badge--중간 { background: var(--sev-mid-bg);  color: var(--sev-mid-tx);  }
+.alzi-severity-badge--낮음 { background: var(--sev-low-bg);  color: var(--sev-low-tx);  }
+
+/* ── V-card issue + law hint ── */
+.alzi-v-issue {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--clr-txt-primary);
+  line-height: var(--lh-body);
+}
+.alzi-v-law-hint {
+  padding: 0 12px 8px;
+  font-size: 12px;
+  color: var(--clr-txt-muted);
+}
+
+/* ── Suggestion box ── */
+.alzi-suggestion-label {
+  display: block;
+  font-weight: 700;
+  color: var(--clr-primary);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+.alzi-suggestion-text {
+  font-size: 13px;
+  color: var(--clr-txt-secondary);
+  line-height: var(--lh-body);
+}
+
+/* ── Contract result ── */
+.alzi-vision-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--clr-primary, #5b6ee1);
+  background: color-mix(in srgb, var(--clr-primary, #5b6ee1) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--clr-primary, #5b6ee1) 25%, transparent);
+  border-radius: 6px;
+  padding: 3px 8px;
+  margin-bottom: 10px;
+}
+.alzi-vision-badge::before { content: '🔍'; font-size: 11px; }
+
+.alzi-contract-summary {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.alzi-v-list { display: flex; flex-direction: column; gap: 8px; }
+.alzi-contract-count--높음 { color: var(--sev-high-tx); }
+.alzi-contract-count--중간 { color: var(--sev-mid-tx); }
+.alzi-contract-count--낮음 { color: var(--sev-low-tx); }
+
+/* ── Confirming choice row ── */
+.alzi-choice-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* ── Q&A Guide Bubble Chips ── */
+.alzi-guide-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.alzi-guide-chip {
+  padding: 5px 11px;
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--clr-txt-secondary);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  text-align: left;
+  white-space: normal;
+}
+.alzi-guide-chip:hover {
+  background: var(--clr-primary-light);
+  border-color: var(--clr-primary-ring);
+  color: var(--clr-primary);
+}
+.alzi-guide-chip:focus-visible {
+  outline: 2px solid var(--clr-primary-ring);
+  outline-offset: 2px;
+}
+
+/* ── File Preview Bar ── */
+.alzi-file-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background: var(--clr-primary-light);
+  border: 1px solid var(--clr-primary-ring);
+  border-radius: var(--r-input);
+  animation: alzi-in var(--dur-fast) var(--ease) both;
+}
+.alzi-file-preview--error {
+  background: #FEF2F2;
+  border-color: #FECACA;
+}
+.alzi-file-preview__icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.alzi-file-preview__name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clr-txt-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.alzi-file-preview__size {
+  font-size: 12px;
+  color: var(--clr-txt-muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.alzi-file-preview__error {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #DC2626;
+  min-width: 0;
+}
+.alzi-file-preview__actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.alzi-file-cancel-btn {
+  padding: 5px 10px;
+  border-radius: var(--r-btn);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--clr-txt-secondary);
+  border: 1px solid var(--clr-border);
+  background: var(--clr-bg);
+  transition: all var(--dur-fast) var(--ease);
+}
+.alzi-file-cancel-btn:hover {
+  border-color: var(--clr-primary-ring);
+  color: var(--clr-primary);
+}
+.alzi-file-cancel-btn:focus-visible {
+  outline: 2px solid var(--clr-primary-ring);
+  outline-offset: 2px;
+}
+.alzi-file-analyze-btn {
+  padding: 5px 12px;
+  border-radius: var(--r-btn);
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--clr-primary);
+  border: 1px solid var(--clr-primary);
+  transition: all var(--dur-fast) var(--ease);
+}
+.alzi-file-analyze-btn:hover:not(:disabled) {
+  background: var(--clr-primary-dark);
+  border-color: var(--clr-primary-dark);
+}
+.alzi-file-analyze-btn:focus-visible {
+  outline: 2px solid var(--clr-primary-ring);
+  outline-offset: 2px;
+}
+.alzi-file-analyze-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* ── Hidden file input ── */
+.alzi-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── Input area override (no double border) ── */
+.alzi-input-area {
+  padding: 10px 16px 4px;
+  background: var(--clr-surface);
+}
+
+/* ── Responsive ── */
+@media (min-width: 640px) {
+  /* feature-grid: 3종 문서 카드 → 3열 */
+  .alzi-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* feature-cards(레거시): 2열 + 홀수 마지막은 전체 폭 */
+  .alzi-feature-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .alzi-feature-cards > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+  .alzi-main { padding: 24px 24px 8px; }
+  .alzi-chat { padding: 24px 24px 8px; }
+  .alzi-input-area { padding: 12px 24px 4px; }
+  .alzi-header { padding: 0 24px; }
+  .alzi-bubble--user { max-width: 60%; }
+  .alzi-bubble--bot  { max-width: 75%; }
+  .alzi-bubble--consultation,
+  .alzi-bubble--contract,
+  .alzi-bubble--collecting,
+  .alzi-bubble--confirming,
+  .alzi-bubble--download,
+  .alzi-bubble--doc-selector,
+  .alzi-bubble--guidance,
+  .alzi-bubble--qna-guide { max-width: 85%; }
+  .alzi-bubble-user { max-width: 60%; }
+  .alzi-bubble-bot  { max-width: 75%; }
+  .alzi-bubble-bot--wide { max-width: 88%; }
+  .alzi-disclaimer { padding: 4px 24px 12px; }
+}
