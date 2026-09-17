@@ -62,7 +62,7 @@
 
 ---
 
-## 🔧 Trouble Shooting
+## Trouble Shooting
 
 ### 문서마다 달라지는 변수명 문제
 
